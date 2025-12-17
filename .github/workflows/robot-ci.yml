@@ -25,10 +25,25 @@ jobs:
           pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Run Robot Tests
-        # O ponto '.' diz ao Robot: "procure arquivos .robot em qualquer lugar deste projeto"
+        # O ponto '.' busca os testes recursivamente. 
+        # Passamos a variável BROWSER para rodar em modo headless no servidor.
         run: |
           python -m robot -d results -v BROWSER:headlesschrome .
         continue-on-error: true
+
+      - name: Generate Test Summary
+        if: always()
+        run: |
+          echo "## 📊 Relatório de Automação - Blog Agibank" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Testes Finalizados!**" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### 📈 Estatísticas" >> $GITHUB_STEP_SUMMARY
+          PASSED=$(grep -oP 'pass="\K[^"]+' results/output.xml | head -1)
+          FAILED=$(grep -oP 'fail="\K[^"]+' results/output.xml | head -1)
+          echo "* **Sucesso:** $PASSED" >> $GITHUB_STEP_SUMMARY
+          echo "* **Falhas:** $FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 _Baixe o artefato **robot-test-report** abaixo para ver os logs com screenshots._" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Test Results
         if: always()

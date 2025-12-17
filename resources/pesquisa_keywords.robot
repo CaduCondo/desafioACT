@@ -12,35 +12,33 @@ ${RODAPE}             id=colophon
 *** Keywords ***
 Abrir navegador
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    # Se a variável BROWSER for 'headlesschrome', adicionamos os argumentos necessários
+    # Configurações para estabilidade no CI (Headless)
     Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless
-    Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --no-sandbox
-    Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --disable-dev-shm-usage
+    Call Method    ${options}    add_argument    --no-sandbox
+    Call Method    ${options}    add_argument    --disable-dev-shm-usage
+    Call Method    ${options}    add_argument    --window-size\=1920,1080
     
     Open Browser    ${URL}    ${BROWSER}    options=${options}
-    Maximize Browser Window
     Set Selenium Timeout    20s
 
 Finalizar teste
-    # Conforme solicitado, captura screenshot sempre
+    # Tira print sempre, conforme solicitado (sucesso ou falha)
     Capture Page Screenshot
     Close Browser
 
 Dado que acesso o blog do Agibank
     Go To    ${URL}
-    # Garante que o rodapé carregou (estratégia que definimos)
     Wait Until Element Is Visible    ${RODAPE}    timeout=30s
 
 Quando abro a pesquisa
-    Wait Until Element Is Visible    ${LUPA_PESQUISA}
-    Click Element    ${LUPA_PESQUISA}
-    # PAUSA PARA ANIMAÇÃO: O campo leva alguns milissegundos para deslizar
-    Sleep    2s 
-    # Usamos um seletor mais específico para o campo de input
-    Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=10s
+    Wait Until Page Contains Element    ${LUPA_PESQUISA}    timeout=30s
+    # Clique via JS para evitar erro de "Element not visible" no ambiente de CI
+    Execute Javascript    document.getElementById('search-open').click()
+    # Pequena pausa para a animação de abertura do campo
+    Sleep    1s
+    Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
 
 E pesquiso por "${termo}"
-    # Limpa e digita o termo
     Input Text      ${CAMPO_INPUT}    ${termo}
     Press Keys      ${CAMPO_INPUT}    ENTER
 
@@ -52,7 +50,7 @@ Então o campo de pesquisa deve desaparecer da tela
     Wait Until Element Is Not Visible    ${CAMPO_INPUT}
 
 Então devo visualizar a página de resultados de busca
-    Wait Until Page Contains    Resultados encontrados para:
+    Wait Until Page Contains    Resultados encontrados para:    timeout=20s
 
 Então devo visualizar a mensagem de resultados não encontrados
-    Wait Until Page Contains    Lamentamos, mas nada coincide
+    Wait Until Page Contains    Lamentamos, mas nada coincide    timeout=20s

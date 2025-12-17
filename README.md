@@ -1,68 +1,36 @@
-# Robot Framework BDD project — nopCommerce demo
+# 🔍 Automação de Testes - Blog Agibank
 
-**Generated:** 2025-09-30 04:32:15 UTC
+Este projeto contém a automação de testes para a funcionalidade de pesquisa do **Blog do Agibank**. O objetivo é validar a busca por termos válidos, inexistentes, caracteres especiais e o comportamento de fechamento do campo de busca.
 
-Este projeto contém um scaffold em Robot Framework com estilo BDD/Gherkin (feature files para leitura)
-e suites Robot executáveis. Também inclui um workflow do GitHub Actions para rodar os testes.
+A solução foi desenvolvida utilizando **Robot Framework** e **SeleniumLibrary**, estruturada com o padrão de **Keywords** para facilitar a manutenção, legibilidade e reuso de código.
 
-## Estrutura do projeto
-```
-nopcommerce_robot_project/
-├── .github/
-│   └── workflows/robot.yml
-├── features/
-│   └── nopcommerce.feature
-├── tests/
-│   └── test_nopcommerce.robot
-├── resources/
-│   └── Keywords.robot
-├── results/
-├── requirements.txt
-└── README.md
-```
+---
 
-## Instalação local
-Recomendado criar um virtualenv Python 3.8+:
+## 🚀 Tecnologias Utilizadas
+
+* **Linguagem:** Python 3.10+
+* **Framework:** Robot Framework
+* **Biblioteca de UI:** SeleniumLibrary
+* **CI/CD:** GitHub Actions
+* **Relatórios:** Robot Framework Logs (HTML) e GitHub Job Summary
+
+---
+
+## 🛠️ Configuração do Ambiente
+
+O projeto é **multiplataforma**, sendo compatível com **Windows, Linux e macOS**.
+
+### 1. Pré-requisitos
+* [Python 3.10+](https://www.python.org/downloads/) instalado e configurado no PATH.
+* Navegador **Google Chrome** instalado.
+
+### 2. Instalação
+Clone o repositório e instale as dependências necessárias utilizando o arquivo de requisitos:
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # mac/linux
-.venv\Scripts\activate    # windows
+# Clonar o repositório
+git clone [https://github.com/SEU_USUARIO/desafioACT.git](https://github.com/SEU_USUARIO/desafioACT.git)
+cd desafioACT
+
+# Instalar dependências
 pip install -r requirements.txt
-```
-
-## Executando os testes
-Os testes Robot estão em `tests/test_nopcommerce.robot`. Para rodar:
-```bash
-robot -d results tests
-ou
-Use para rodar via gradle:
-'.\gradlew.bat robotTests'
-```
-Observações:
-* Use `--variable BROWSER:chrome` para rodar com Chrome. Você pode usar firefox também se tiver o driver.
-* O projeto usa **webdriver-manager** para ajudar a baixar drivers automaticamente quando necessário.
-* Existe um arquivo `features/nopcommerce.feature` com a descrição BDD/Gherkin para leitura. 
-  Caso queira executar `.feature` diretamente, instale `robotframework-gherkin` (já listado em requirements) e siga a documentação do pacote.
-
-## GitHub Actions
-O workflow `.github/workflows/robot.yml` instala dependências e executa `robot` na runner.
-Ele salva artefatos `results` (logs, report, output.xml).
-
-## O que os testes fazem
-Contém cenários (implementação simplificada — pode precisar de ajustes de *locators* dependendo da versão do site):
-- Adicionar produto no carrinho
-- Tirar produto do carrinho
-- Adicionar 2 produtos no carrinho
-- Criar usuário
-- Fazer login com o usuário criado
-- Finalizar compra com 1 produto (fluxo simplificado)
-- Finalizar compra com 2 produtos (fluxo simplificado)
-
-> 🚨 *Importante:* O site demo (`https://demo.nopcommerce.com/`) pode mudar a estrutura HTML/IDs com o tempo.
-As keywords foram escritas de forma robusta, porém você pode precisar ajustar seletores em `resources/Keywords.robot`.
-
-## Como abrir Report/Log
-Após a execução local, abra `results/report.html` e `results/log.html`.
-
-## Pacote
-Um arquivo `.zip` com todo o projeto está disponibilizado ao lado para download.
