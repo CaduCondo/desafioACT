@@ -1,0 +1,37 @@
+plugins {
+    id 'base'
+}
+
+ext {
+    venvDir = ".venv"
+    pythonBin = System.getProperty("os.name").toLowerCase().contains("windows")
+        ? "${venvDir}/Scripts/python"
+        : "${venvDir}/bin/python"
+
+    robotBin = System.getProperty("os.name").toLowerCase().contains("windows")
+        ? "${venvDir}/Scripts/robot"
+        : "${venvDir}/bin/robot"
+}
+
+tasks.register('createVenv', Exec) {
+    commandLine 'python', '-m', 'venv', venvDir
+}
+
+tasks.register('installDeps', Exec) {
+    dependsOn 'createVenv'
+    commandLine pythonBin, '-m', 'pip', 'install', '--upgrade', 'pip'
+}
+
+tasks.register('installRequirements', Exec) {
+    dependsOn 'installDeps'
+    commandLine pythonBin, '-m', 'pip', 'install', '-r', 'requirements.txt'
+}
+
+tasks.register('robotTests', Exec) {
+    dependsOn 'installRequirements'
+    commandLine robotBin, '-d', 'results', 'tests'
+}
+
+tasks.register('cleanResults', Delete) {
+    delete 'results'
+}
