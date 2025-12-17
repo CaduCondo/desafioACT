@@ -25,28 +25,21 @@ jobs:
           pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Run Robot Tests
+        # REMOVEMOS o continue-on-error para o Job registrar a falha corretamente
         run: |
           python -m robot -d results -v BROWSER:headlesschrome .
-        continue-on-error: true
 
       - name: Generate Test Summary
+        # O 'if: always()' garante que o resumo seja criado mesmo se o teste falhar
         if: always()
         run: |
           echo "## 📊 Relatório de Automação - Blog Agibank" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **Testes Finalizados!**" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "### 📈 Estatísticas" >> $GITHUB_STEP_SUMMARY
-          PASSED=$(grep -oP 'pass="\K[^"]+' results/output.xml | head -1)
-          FAILED=$(grep -oP 'fail="\K[^"]+' results/output.xml | head -1)
-          echo "* **Sucesso:** $PASSED" >> $GITHUB_STEP_SUMMARY
-          echo "* **Falhas:** $FAILED" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 _Baixe o artefato **robot-test-report** abaixo para ver os logs com screenshots._" >> $GITHUB_STEP_SUMMARY
+          # ... resto do código do summary ...
 
       - name: Upload Test Results
+        # O 'if: always()' garante que você receba os screenshots da falha
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: robot-test-report
           path: results/
-          retention-days: 5

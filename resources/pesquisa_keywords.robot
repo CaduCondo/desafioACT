@@ -10,20 +10,38 @@ ${BOTAO_FECHAR}       id=search-close
 ${RODAPE}             css:footer
 
 *** Keywords ***
+*** Keywords ***
 Abrir navegador
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    
-    # Configurações de estabilidade para CI
     Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless
+    
     Call Method    ${options}    add_argument    --no-sandbox
     Call Method    ${options}    add_argument    --disable-dev-shm-usage
     Call Method    ${options}    add_argument    --window-size\=1920,1080
-    # Impede que o site identifique o robô e bloqueie o conteúdo
+    
+    # ESTES ARGUMENTOS SÃO CRICIAIS PARA SITES COM BLOQUEIO (WAF)
+    Call Method    ${options}    add_experimental_option    excludeSwitches    ${{['enable-automation']}}
     Call Method    ${options}    add_argument    --disable-blink-features\=AutomationControlled
     Call Method    ${options}    add_argument    --user-agent\=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
     
     Open Browser    ${URL}    ${BROWSER}    options=${options}
     Set Selenium Timeout    30s
+
+Quando abro a pesquisa
+    # 1. Espera a página carregar (pelo menos o body)
+    Wait Until Page Contains Element    tag:body    timeout=30s
+    
+    # 2. Tenta clicar usando um seletor CSS de classe, que é mais estável que o ID no Agibank
+    # O seletor abaixo busca o link de pesquisa dentro da barra de menu
+    ${LUPA_CSS}    Set Variable    css:.ast-search-menu-icon a
+    
+    Wait Until Page Contains Element    ${LUPA_CSS}    timeout=30s
+    
+    # 3. Força o clique via JavaScript usando a classe
+    Execute Javascript    document.querySelector('.ast-search-menu-icon a').click()
+    
+    # 4. Aguarda o input aparecer
+    Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
 
 Finalizar teste
     Capture Page Screenshot
@@ -33,19 +51,6 @@ Dado que acesso o blog do Agibank
     Go To    ${URL}
     # Espera o rodapé para garantir que a página carregou o conteúdo
     Wait Until Page Contains Element    ${RODAPE}    timeout=30s
-
-Quando abro a pesquisa
-    # O nome correto para a SeleniumLibrary é este abaixo:
-    Wait Until Page Contains Element    ${LUPA_PESQUISA}    timeout=30s
-    
-    # Scroll para o topo para garantir visibilidade do header
-    Execute Javascript    window.scrollTo(0, 0)
-    
-    # Clique via JS para evitar problemas de renderização no CI
-    Execute Javascript    document.getElementById('search-open').click()
-    
-    # Aguarda o campo de digitação aparecer
-    Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
 
 E pesquiso por "${termo}"
     Input Text      ${CAMPO_INPUT}    ${termo}
