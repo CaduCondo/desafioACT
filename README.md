@@ -1,6 +1,6 @@
-# 🚀 Desafio ACT - Automação Full Stack (Web & API)
+# 🚀 Desafio ACT - Automação Full Stack (Web)
 
-Este repositório apresenta uma solução robusta para o desafio técnico de automação, integrando testes de interface (E2E) e testes de serviços (API) utilizando o ecossistema **Robot Framework**.
+Este repositório apresenta uma solução robusta para o desafio técnico de automação, integrando testes de interface (E2E) utilizando o ecossistema **Robot Framework**.
 
 ---
 
@@ -34,9 +34,8 @@ text
 ├── requirements.txt     # Dependências do projeto (Python)
 └── README.md            # Documentação principal
 
-## Detalhes de cada desafio Act
 
-### 🌐 Projeto 01: Automação Web (Blog Agibank)
+## 🌐 Projeto 01: Automação Web (Blog Agibank)
 
 Objetivo: Validar a resiliência e funcionalidade do sistema de busca do Blog do Agibank.
 Tecnologia: Robot Framework + SeleniumLibrary.
@@ -48,32 +47,8 @@ Destaque: Captura automática de screenshots em cada cenário (Diretriz 17/12/20
 [x] Pesquisa por termos inexistentes: Valida a mensagem de "Nada encontrado".
 [x] Interação UI: Valida o comportamento de abertura e fechamento do campo de busca.
 
-#### Como rodar apenas os testes Web:
-```bash
-robot -d results -v BROWSER:chrome tests/web/
-
-
-### 🌐 Projeto 02: Automação de API (Dog API)
-
-Objetivo: Garantir a integridade dos dados e a disponibilidade dos serviços da Dog API.
-Tecnologia: Robot Framework + RequestsLibrary.
-Qualidade: Inclui validações de SLA (tempo de resposta) e tratamento de erros.
-
-####🔍 Endpoints Testados
-Método  Endpoint                Descrição
-GET     /breeds/list/all        Valida a listagem completa de raças.
-GET     /breed/{breed}/images   Verifica o retorno de imagens por raça específica.
-GET     /breeds/image/random    Valida o formato e integridade da URL aleatória.
-
-#### Como rodar apenas os testes Web:
-```bash
-robot -d results tests/api/
-
-
-## 🚀 Execução Global e Relatórios
-Para executar todos os testes do desafio simultaneamente e gerar um relatório unificado:
-
-```bash
+### Como rodar os testes:
+bash
 robot -d results .
 
 
