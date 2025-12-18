@@ -4,7 +4,7 @@ Library    SeleniumLibrary
 *** Variables ***
 ${URL}                https://blogdoagi.com.br/
 ${BROWSER}            chrome
-${LUPA_PESQUISA}      css:.ast-search-menu-icon
+${LUPA_PESQUISA}      id=search-open
 ${CAMPO_INPUT}        css:input.search-field
 ${BOTAO_FECHAR}       id=search-close
 
